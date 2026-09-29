@@ -1,1 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0b0d12">
+  <meta name="description" content="A personal AI assistant built by Daimen.">
+  <title>My Very Own AI</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">✦</div>
+        <div>
+          <strong>My Very Own AI</strong>
+          <span>Personal assistant</span>
+        </div>
+      </div>
 
+      <button id="newChatBtn" class="new-chat">＋ New chat</button>
+
+      <div class="sidebar-section">
+        <label class="section-label">Model</label>
+        <select id="modelSelect">
+          <option value="gpt-5.6-luna">GPT-5.6 Luna</option>
+          <option value="gpt-5.6-terra">GPT-5.6 Terra</option>
+          <option value="gpt-5.6-sol">GPT-5.6 Sol</option>
+        </select>
+      </div>
+
+      <label class="toggle-row">
+        <span>
+          <strong>Web search</strong>
+          <small>Let the AI search current information</small>
+        </span>
+        <input id="webSearchToggle" type="checkbox">
+      </label>
+
+      <div class="sidebar-bottom">
+        <div id="connectionStatus" class="status"><span></span> Connecting…</div>
+        <button id="exportBtn" class="text-button">Export chat</button>
+        <button id="clearBtn" class="text-button danger">Clear local memory</button>
+      </div>
+    </aside>
+
+    <main class="chat">
+      <header class="chat-header">
+        <div>
+          <h1 id="chatTitle">New conversation</h1>
+          <p id="chatSubtitle">Your AI, your rules.</p>
+        </div>
+        <button id="settingsBtn" class="icon-button" title="Settings">⚙</button>
+      </header>
+
+      <section id="messages" class="messages" aria-live="polite"></section>
+
+      <div id="typing" class="typing hidden">
+        <span></span><span></span><span></span>
+        <em>Thinking…</em>
+      </div>
+
+      <form id="composer" class="composer">
+        <textarea id="prompt" rows="1" maxlength="12000"
+          placeholder="Message your AI…" autocomplete="off"></textarea>
+        <button id="sendBtn" type="submit" aria-label="Send">➤</button>
+      </form>
+      <div class="composer-note">Enter to send · Shift+Enter for a new line</div>
+    </main>
+  </div>
+
+  <dialog id="settingsDialog">
+    <form method="dialog" class="settings-card">
+      <button class="close-dialog" value="cancel" aria-label="Close">×</button>
+      <h2>AI settings</h2>
+      <label>
+        AI name
+        <input id="aiName" maxlength="40" value="NOVA">
+      </label>
+      <label>
+        Personality / instructions
+        <textarea id="systemPrompt" rows="7" maxlength="5000">You are NOVA, a helpful personal AI assistant. Be clear, capable, honest about uncertainty, and conversational. Remember that you are an AI, not a human. Do not invent facts or claim to have taken actions you did not take.</textarea>
+      </label>
+      <button id="saveSettings" class="primary-button" value="default">Save settings</button>
+    </form>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js"></script>
+</body>
+</html>
