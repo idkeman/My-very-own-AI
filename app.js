@@ -5,8 +5,10 @@ const FUNCTION_NAME="ai-chat";
 const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
 const $=id=>document.getElementById(id);
 
+let savedMessages=[];
+try{savedMessages=JSON.parse(localStorage.getItem("nova_messages")||"[]");if(!Array.isArray(savedMessages))savedMessages=[];}catch{localStorage.removeItem("nova_messages");}
 const state={
-  messages:JSON.parse(localStorage.getItem("nova_messages")||"[]"),
+  messages:savedMessages,
   name:localStorage.getItem("nova_name")||"NOVA",
   instructions:localStorage.getItem("nova_instructions")||$("systemPrompt").value
 };
