@@ -65,7 +65,13 @@ async function sendMessage(text){
     state.messages.push({role:"assistant",content:data.output});
     save();render();
   }catch(error){
-    const message=error?.message||String(error)||"Unknown error";
+    let message=error?.message||String(error)||"Unknown error";
+    if(error?.context instanceof Response){
+      try{
+        const body=await error.context.clone().json();
+        if(body?.error) message=String(body.error);
+      }catch{}
+    }
     state.messages.push({role:"assistant",content:"I couldn't answer that yet. "+message});
     save();render();setStatus("error",message.slice(0,80));
   }finally{
