@@ -43,16 +43,17 @@ async function ensureSession(){
   const {data:{session}}=await supabaseClient.auth.getSession();
   if(session){setStatus("ok","Connected");return session}
   const {data,error}=await supabaseClient.auth.signInAnonymously();
-  if(error) throw new Error("Anonymous sign-in is not enabled in Supabase yet. Enable Anonymous Sign-Ins in Authentication settings.");
+  if(error) throw new Error("Supabase sign-in failed: "+error.message);
   setStatus("ok","Connected");
   return data.session;
 }
 async function sendMessage(text){
-  const session=await ensureSession();
   state.messages.push({role:"user",content:text});
   save();render();
   $("typing").classList.remove("hidden");$("sendBtn").disabled=true;
+  setStatus("","Connecting to AI…");
   try{
+    await ensureSession();
     const recent=state.messages.slice(-30);
     const {data,error}=await supabaseClient.functions.invoke(FUNCTION_NAME,{
       body:{messages:recent,model:$("modelSelect").value,webSearch:$("webSearchToggle").checked,instructions:state.instructions,name:state.name}
@@ -62,8 +63,9 @@ async function sendMessage(text){
     state.messages.push({role:"assistant",content:data.output});
     save();render();
   }catch(error){
-    state.messages.push({role:"assistant",content:"I couldn't answer that yet. "+error.message});
-    save();render();setStatus("error","AI service needs setup");
+    const message=error?.message||String(error)||"Unknown error";
+    state.messages.push({role:"assistant",content:"I couldn't answer that yet. "+message});
+    save();render();setStatus("error",message.slice(0,80));
   }finally{
     $("typing").classList.add("hidden");$("sendBtn").disabled=false;$("prompt").focus();
   }
